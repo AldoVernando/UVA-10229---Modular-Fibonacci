@@ -1,0 +1,69 @@
+#include<stdio.h>
+
+struct matrix{
+	unsigned long long A , B , C , D;
+}matrixIdentity, matrixFibo;
+
+int pow(int m){
+	if(m == 0)
+		return 1;
+		
+	if(m % 2 == 0){ //Even
+		int sum = pow(m/2);
+		return sum * sum;
+	}
+	
+	if(m % 2 == 1) //Odd
+		return 2 * pow(m-1);
+}
+
+struct matrix multiply(matrix mat , matrix rix, int mod){
+		matrix result;
+
+		result.A = ((mat.A * rix.A) + (mat.B * rix.C)) % mod;
+		result.B = ((mat.A * rix.B) + (mat.B * rix.D)) % mod;
+		result.C = ((mat.C * rix.A) + (mat.D * rix.C)) % mod;
+		result.D = ((mat.C * rix.B) + (mat.D * rix.D)) % mod;
+		
+		return result;
+}
+
+
+struct matrix fibo(int n, int m){
+	
+	if(n == 0)
+		return matrixIdentity;
+
+	if(n % 2 == 0){ // Even
+		matrix sum = fibo(n/2,m);
+		return multiply(sum,sum,m);
+	}
+	
+	if(n % 2 == 1){ // Odd
+		return multiply(matrixFibo,fibo(n-1,m),m);
+	}
+}
+
+int main(){
+	
+	int n , m;
+	matrixIdentity.A = 1;	
+	matrixIdentity.B = 0;
+	matrixIdentity.C = 0;
+	matrixIdentity.D = 1;
+	
+	matrixFibo.A = 1;
+	matrixFibo.B = 1;
+	matrixFibo.C = 1;
+	matrixFibo.D = 0;
+	
+	while(scanf("%d %d",&n,&m) != EOF)
+	{	
+		if(n == 0 || m == 0)
+			printf("0\n");
+		else
+			printf("%llu\n",fibo(n-1,pow(m)).A);
+	}
+	
+	return 0;
+}
